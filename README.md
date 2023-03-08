@@ -240,5 +240,6 @@ For some data that are difficult to recognize, the recognition results will not 
 
 
 ### 4. Related
-1.[PaddleOCR PPOCRLabel Git code](https://github.com/PaddlePaddle/PaddleOCR/tree/release/2.6/PPOCRLabel) 
-1.[Tzutalin. LabelImg. Git code (2015)](https://github.com/tzutalin/labelImg)
+1.[PaddleOCR PPOCRLabel Git code](https://github.com/PaddlePaddle/PaddleOCR/tree/release/2.6/PPOCRLabel)
+
+2.[Tzutalin. LabelImg. Git code (2015)](https://github.com/tzutalin/labelImg)
