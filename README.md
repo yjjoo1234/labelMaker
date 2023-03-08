@@ -1,35 +1,40 @@
 # labelMaker (based on PPOCRLabelv2)
 
-labelMaker is a semi-automatic graphic annotation tool suitable for OCR field, with built-in OCR model to automatically detect and re-recognize data. It is written in Python3 and PyQT5, supporting rectangular box, table, irregular text and key information annotation modes. Annotations can be directly used for the training of OCR detection and recognition models.
-
-|  
+labelMaker는 한글 OCR 학습용 데이터(Text Detection & Recognition, Key Information Extraction) 생성을 위한 툴입니다. 
+ 
 
 ## 1. Installation and Run
 
-### 1.1 Install PaddlePaddle
+### 1.1 Install PaddlePaddle 
 
 ```bash
 pip3 install --upgrade pip
 
-# If you have cuda9 or cuda10 installed on your machine, please run the following command to install
+# gpu version: cuda9 or cuda10 
 python3 -m pip install paddlepaddle-gpu -i https://mirror.baidu.com/pypi/simple
 
-# If you only have cpu on your machine, please run the following command to install
+# cpu version 
 python3 -m pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
-```
+``` 
+
+gpu version: cuda11+  
+[visit PaddlePaddle site](https://www.paddlepaddle.org.cn/en/install/quick?docurl=/documentation/docs/en/install/pip/macos-pip_en.html)  
+ 
 
 For more software version requirements, please refer to the instructions in [Installation Document](https://www.paddlepaddle.org.cn/install/quick) for operation.
 
 ### 1.2 Run labelMaker
 
-$ python labelMaker.py 
+```bash 
+python labelMaker.py 
+
+``` 
 
 #### Windows
 
 ```bash 
-
-# Select label mode and run 
-$ python labelMaker.py  # [KIE mode] for [detection + recognition + keyword extraction] labeling
+ 
+python labelMaker.py  
 ```
 
 > If you getting this error `OSError: [WinError 126] The specified module could not be found` when you install shapely on windows. Please try to download Shapely whl file using http://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely.
@@ -37,23 +42,21 @@ $ python labelMaker.py  # [KIE mode] for [detection + recognition + keyword extr
 > Reference: [Solve shapely installation on windows](https://stackoverflow.com/questions/44398265/install-shapely-oserror-winerror-126-the-specified-module-could-not-be-found)
 >
 
-#### Ubuntu Linux
+#### Linux
 
 ```bash 
-
-# Select label mode and run 
-$ python labelMaker.py # [KIE mode] for [detection + recognition + keyword extraction] labeling
+ 
+python labelMaker.py  
 ```
 
 #### MacOS
 ```bash 
 pip3 install opencv-contrib-python-headless==4.2.0.32
 
-$ python labelMaker.py # [KIE mode] for [detection + recognition + keyword extraction] labeling
+python labelMaker.py # [KIE mode] for [detection + recognition + keyword extraction] labeling
 ```
 
-#### 1.2.2 Run labelMaker by Python Script
-If you modify the labelMaker file (for example, specifying a new built-in model), it will be more convenient to see the results by running the Python script. If you still want to start with the whl package, you need to uninstall the whl package in the current environment and then recompile it according to the next section.
+#### 1.2.2 Run labelMaker by Python Script 
 
 ```bash
 cd ./labelMaker  # Switch to the labelMaker directory
@@ -61,15 +64,7 @@ cd ./labelMaker  # Switch to the labelMaker directory
 # Select label mode and run 
 python labelMaker.py   
 ```
-
-#### 1.2.3 Build and Install the Whl Package Locally
-Compile and install a new whl package, where 1.0.2 is the version number, you can specify the new version in 'setup.py'.
-```bash
-cd labelMaker
-python3 setup.py bdist_wheel
-pip3 install dist/labelMaker-1.0.2-py2.py3-none-any.whl
-```
-
+ 
 
 ## 2. Usage
 
@@ -98,24 +93,8 @@ pip3 install dist/labelMaker-1.0.2-py2.py3-none-any.whl
 9. Click "Delete Image", and the image will be deleted to the recycle bin.
 
 10. Labeling result: the user can export the label result manually through the menu "File - Export Label", while the program will also export automatically if "File - Auto export Label Mode" is selected. The manually checked label will be stored in *Label.txt* under the opened picture folder. Click "File"-"Export Recognition Results" in the menu bar, the recognition training data of such pictures will be saved in the *crop_img* folder, and the recognition label will be saved in *rec_gt.txt*<sup>[4]</sup>.
-
-### 2.2 Table Annotation
-The table annotation is aimed at extracting the structure of the table in a picture and converting it to Excel format, 
-so the annotation needs to be done simultaneously with external software to edit Excel.
-In labelMaker, complete the text information labeling (text and position), complete the table structure information 
-labeling in the Excel file, the recommended steps are:
-
-1. Table annotation: After opening the table picture, click on the `Table Recognition` button in the upper right corner of labelMaker, which will call the table recognition model in PP-Structure to automatically label 
-the table and pop up Excel at the same time.
-   
-2. Change the recognition result: **label each cell** (i.e. the text in a cell is marked as a box). Right click on the box and click on `Cell Re-recognition`. 
-   You can use the model to automatically recognise the text within a cell.
-   
-3. Mark the table structure: for each cell contains the text, **mark as any identifier (such as `1`) in Excel**, to ensure that the merged cell structure is same as the original picture.
-
-4. Export JSON format annotation: close all Excel files corresponding to table images, click `File`-`Export table JSON annotation` to obtain JSON annotation results.
-
-### 2.3 Note
+ 
+### 2.2 Note
 
 [1] labelMaker uses the opened folder as the project. After opening the image folder, the picture will not be displayed in the dialog. Instead, the pictures under the folder will be directly imported into the program after clicking "Open Dir".
 
@@ -240,6 +219,5 @@ For some data that are difficult to recognize, the recognition results will not 
 
 
 ### 4. Related
-1.[PaddleOCR PPOCRLabel Git code](https://github.com/PaddlePaddle/PaddleOCR/tree/release/2.6/PPOCRLabel)
 
-2.[Tzutalin. LabelImg. Git code (2015)](https://github.com/tzutalin/labelImg)
+1.[Tzutalin. LabelImg. Git code (2015)](https://github.com/tzutalin/labelImg)
