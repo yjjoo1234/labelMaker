@@ -116,9 +116,9 @@ python labelMaker.py
 
 ## 3. Explanation
 
-### 3.1 Shortcut keys
+### 3.1 단축키 
 
-| Shortcut keys            | Description                                      |
+| 단축키                     | 설명                                              |
 |--------------------------|--------------------------------------------------|
 | Ctrl + Shift + R         | Re-recognize all the labels of the current image |
 | W                        | Create a rect box                                |
@@ -130,7 +130,7 @@ python labelMaker.py
 | Ctrl + R                 | Re-recognize the selected box                    |
 | Ctrl + C                 | Copy and paste the selected box                  |
 | Ctrl + Left Mouse Button | Multi select the label box                       |
-| Backspace                 | Delete the selected box                          |
+| Backspace                | Delete the selected box                          |
 | Ctrl + V                 | Check image                                      |
 | Ctrl + Shift + d         | Delete image                                     |
 | D                        | Next image                                       |

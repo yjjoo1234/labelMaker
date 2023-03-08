@@ -70,17 +70,17 @@ class PaddleOCR(predict_system.TextSystem):
         if params.lang == 'ko':    
             params.det_model_dir = './saved_model/det'         
             params.rec_model_dir = './saved_model/rec' 
-            params.rec_char_dict_path = './config/rec/korean_dict.txt'  
+            params.rec_char_dict_path = './config/ko_dict.txt'  
             params.cls_model_dir = './saved_model/cls'  
         elif params.lang == 'en': 
             params.det_model_dir = './saved_model/det_en'         
             params.rec_model_dir = './saved_model/rec_en' 
-            params.rec_char_dict_path = './config/rec/en_dict.txt'  
+            params.rec_char_dict_path = './config/en_dict.txt'  
             params.cls_model_dir = './saved_model/cls'   
         else: 
             params.det_model_dir = './saved_model/det_zh'         
             params.rec_model_dir = './saved_model/rec_zh' 
-            params.rec_char_dict_path = './config/rec/ppocr_keys_v1.txt' 
+            params.rec_char_dict_path = './config/ppocr_keys_v1.txt' 
             params.cls_model_dir = './saved_model/cls'  
 
         if params.ocr_version == 'OCRv3':
