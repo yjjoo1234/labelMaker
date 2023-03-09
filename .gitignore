@@ -1,6 +1,5 @@
 # Project related 
 output/
-saved_model/
 
   
 # VENV
@@ -69,7 +68,6 @@ cover/
 *.mo
 *.pot
 *.jpg
-*.txt
 *.png
 *.gif
 *.pt
