@@ -8,7 +8,9 @@ import subprocess
 import platform 
 import sys
 import xlrd
-from functools import partial
+import glob 
+from functools import partial 
+from PIL import Image   
 
 from PyQt5.QtCore import QSize, Qt, QPoint, QByteArray, QTimer, QFileInfo, QPointF, QProcess
 from PyQt5.QtGui import QImage, QCursor, QPixmap, QImageReader
@@ -40,6 +42,14 @@ from libs.hashableQListWidgetItem import HashableQListWidgetItem
 from libs.editinlist import EditInList
 from libs.unique_label_qlist_widget import UniqueLabelQListWidget
 from libs.keyDialog import KeyDialog
+
+from libs.augment import ( 
+    Contrast, Brightness, JpegCompression, Pixelate, 
+    GlassBlur, GaussianNoise, ShotNoise, ImpulseNoise, SpeckleNoise,
+    AutoContrast, Sharpness, Color, Stretch, Distort, 
+    Fog, Frost, Snow, Rain, Shadow, Curve, Distortion_Sin, Distortion_Cos   
+)  
+
 
 __appname__ = 'labelMaker'
 
@@ -485,6 +495,9 @@ class MainWindow(QMainWindow):
         exportKieMM = action(getStr('exportKieMM'), self.exportKieMM,
                             '', 'save', getStr('exportKieMM'), enabled=False)
         
+        makeRecData = action(getStr('makeRecData'), self.makeRecData,
+                            '', 'save', getStr('makeRecData'), enabled=False)
+        
         saveLabel = action(getStr('saveLabel'), self.saveLabelFile,  #
                            'Ctrl+S', 'save', getStr('saveLabel'), enabled=False) 
         
@@ -573,6 +586,7 @@ class MainWindow(QMainWindow):
                               undo=undo, undoLastPoint=undoLastPoint, open_dataset_dir=open_dataset_dir,
                               rotateLeft=rotateLeft, rotateRight=rotateRight, lock=lock, exportKie=exportKie, exportDet=exportDet, 
                               exportRecMM=exportRecMM, exportDetMM=exportDetMM, exportKieMM=exportKieMM, 
+                              makeRecData=makeRecData, 
                               fileMenuActions=(opendir, open_dataset_dir, saveLabel, exportKie, exportDet, resetAll, quit),
                               beginner=(), advanced=(),
                               editMenu=(createpoly, edit, copy, delete, singleRere, singleExport, None, undo, undoLastPoint,
@@ -620,6 +634,7 @@ class MainWindow(QMainWindow):
                    (opendir, open_dataset_dir, 
                     None, saveLabel, exportDet, exportRec, exportKie, 
                     None, exportDetMM, exportRecMM, exportKieMM, 
+                    None, makeRecData, 
                     None, self.autoSaveOption, 
                     None, resetAll, exportCropImg,
                     quit))
@@ -1822,6 +1837,9 @@ class MainWindow(QMainWindow):
                 self.actions.exportDetMM.setEnabled(True)
                 self.actions.exportRecMM.setEnabled(True) 
                 self.actions.exportKieMM.setEnabled(True) 
+                
+                self.actions.makeRecData.setEnabled(True) 
+                
 
         elif mode == 'Auto':
             if annotationFilePath and self.saveLabels(annotationFilePath, mode=mode):
@@ -2514,14 +2532,7 @@ class MainWindow(QMainWindow):
                      
                     if exclude: 
                         continue 
-        
-                    # arr = np.array(pt)
-                    # xmin = int(min(arr[:, 0]))
-                    # xmax = int(max(arr[:, 0]))
-                    # ymin = int(min(arr[:, 1]))
-                    # ymax = int(max(arr[:, 1]))  
-                    # bbox = [xmin, ymin, xmax, ymax] # [1946, 438, 2135, 492] : x1, y1, x2, y2 
-                    # bbox_res.append([xmin,  ymin, xmax, ymax, text]) 
+         
                     bbox_info.append({
                         'transcription': text, 
                         'label': key, 
@@ -2649,6 +2660,121 @@ class MainWindow(QMainWindow):
             print(repr(ex))
             return '', False  
 
+    # ---------------------------------------------------------------- 
+    def makeRecData(self):
+        if os.name == 'nt': 
+            img_dir = ("\\").join(self.lastOpenDir.split("\\"))  
+        else: 
+            img_dir = ('/').join(self.lastOpenDir.split('/'))    
+        self.makeRecAugmentData(img_dir,  "rect_gt.txt")
+        
+    def makeRecAugmentData(self, img_dir, output): 
+        try: 
+            rec_images = [] 
+            label_list = glob.glob(img_dir + "/rec_*.txt")
+            for lbl in label_list: 
+                with open(lbl, 'r') as f: 
+                    labels = f.readlines() 
+                for l in labels:  
+                    rec_images.append(l)
+                    
+            rec_img_dir = os.path.join(img_dir, 'crop_img')  
+            ret, output = self.rec_image_augment(rec_img_dir, rec_img_dir, rec_images)
+            
+            if ret:
+                QMessageBox.information(self, "Information", "Rec 학습데이터가 생성되었습니다: \n{}".format(output)) 
+            else: 
+                QMessageBox.information(self, "Error", "Rec 학습데이터 생성 에러: \n{}".format(output) ) 
+                
+        except Exception as ex: 
+            print(repr(ex))
+            
+    def rec_image_augment(self, img_dir=None, target_dir=None, label_list=None):   
+        if not os.path.exists(target_dir): 
+            os.mkdir(target_dir)
+            
+        try: 
+            labels = []  
+            for i, d in enumerate(label_list):  
+                if len(d.split('\t')) < 2: 
+                    continue 
+
+                img_file = d.split('\t')[0].strip()
+                label = d.split('\t')[1].strip()  
+                labels.append(img_file + "\t" + label.replace('\n', '') )
+
+                file_name = (img_file.split('.')[0])  
+                file_ext = img_file.split('.')[1]  
+
+                img = os.path.join(img_dir, img_file)
+                if os.path.isfile(img):  
+                    img = Image.open(img)
+                    
+                    img_aug = Contrast()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_contrast.' + file_ext))  
+                    labels.append(file_name + '_contrast.' + file_ext + "\t" + label ) 
+
+                    img_aug = Brightness()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_bright.' + file_ext))  
+                    labels.append(file_name + '_bright.' + file_ext + "\t" + label )
+
+                    img_aug = GaussianNoise()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_gnoise.' + file_ext))  
+                    labels.append(file_name + '_gnoise.' + file_ext + "\t" + label )
+
+                    img_aug = GlassBlur()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_glsblur.' + file_ext))  
+                    labels.append(file_name + '_glsblur.' + file_ext + "\t" + label )
+                    
+                    img_aug = Sharpness()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_sharp.' + file_ext))  
+                    labels.append(file_name + '_sharp.' + file_ext + "\t" + label )
+
+                    img_aug = Color()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_color.' + file_ext))  
+                    labels.append(file_name + '_color.' + file_ext + "\t" + label )
+
+                    img_aug = Snow()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_snow.' + file_ext))  
+                    labels.append(file_name + '_snow.' + file_ext + "\t" + label ) 
+                    
+                    # Fog, Frost, Snow, Rain, Shadow  
+                    img_aug = Fog()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_fog.' + file_ext))  
+                    labels.append(file_name + '_fog.' + file_ext + "\t" + label )  
+
+                    img_aug = Shadow()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_shadow.' + file_ext))  
+                    labels.append(file_name + '_shadow.' + file_ext + "\t" + label ) 
+
+                    img_aug = Rain()(img)
+                    img_aug.save(os.path.join(target_dir, file_name + '_rain.' + file_ext))  
+                    labels.append(file_name + '_rain.' + file_ext + "\t" + label ) 
+
+                    img_aug = Distortion_Sin(
+                        img,
+                        vertical=False,
+                        horizontal=False
+                    )
+                    img_aug.save(os.path.join(target_dir, file_name + '_distort.' + file_ext))  
+                    labels.append(file_name + '_distort.' + file_ext + "\t" + label )  
+
+                else: 
+                    print('No file: {}'.format(img))  
+
+            output = os.path.join(target_dir, 'rec_label.txt') 
+            with open(output, 'w') as f: 
+                for lbl in labels: 
+                    f.write(lbl + '\n')   
+            return True, output  
+        except Exception as ex: 
+            print(repr(ex)) 
+            return False, repr(ex)  
+            
+        
+            
+            
+    # ------------------------------------------------------------------
     def autolcm(self):
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
@@ -2723,6 +2849,8 @@ class MainWindow(QMainWindow):
                 self.actions.exportDetMM.setEnabled(True) 
                 self.actions.exportRecMM.setEnabled(True)
                 self.actions.exportKieMM.setEnabled(True)
+                
+                self.actions.makeRecData.setEnabled(True)  
 
     def saveFilestate(self):
         with open(self.fileStatepath, 'w', encoding='utf-8') as f:

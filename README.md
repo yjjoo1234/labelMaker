@@ -16,11 +16,9 @@ python3 -m pip install paddlepaddle-gpu -i https://mirror.baidu.com/pypi/simple
 # cpu version 
 python3 -m pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
 ``` 
-
 gpu version: cuda11+  
 [visit PaddlePaddle site](https://www.paddlepaddle.org.cn/en/install/quick?docurl=/documentation/docs/en/install/pip/macos-pip_en.html)  
  
-
 For more software version requirements, please refer to the instructions in [Installation Document](https://www.paddlepaddle.org.cn/install/quick) for operation.
 
 ### 1.2 Run labelMaker
@@ -141,10 +139,8 @@ python labelMaker.py
 
 ### 3.2 Built-in Model
 
-- Default model: labelMaker uses the Korean ultra-lightweight OCR model in OCR by default. 
-
-- Model language switching: Changing the built-in model language is supportable by clicking "OCR"-"Choose OCR Model" in the menu bar. Currently supported languages​include Korean, English, Chinese, and Japanese.
-  For specific model download links, please refer to [OCR Model List](https://github.com/PaddlePaddle/PaddleOCR/blob/develop/doc/doc_en/models_list_en.md#multilingual-recognition-modelupdating)
+- Default model: labelMaker uses the Korean ultra-lightweight OCR model in OCR by default.  
+ 
 
 - **Custom Model**: If users want to replace the built-in model with their own inference model, they can follow the [Custom Model Code Usage](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.3/doc/doc_en/whl_en.md#31-use-by-code) by modifying labelMaker.py  :
 
