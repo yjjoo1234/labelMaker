@@ -18,8 +18,7 @@ python3 -m pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
 ``` 
 gpu version: cuda11+  
 [visit PaddlePaddle site](https://www.paddlepaddle.org.cn/en/install/quick?docurl=/documentation/docs/en/install/pip/macos-pip_en.html)  
- 
-For more software version requirements, please refer to the instructions in [Installation Document](https://www.paddlepaddle.org.cn/install/quick) for operation.
+
 
 ### 1.2 Run labelMaker
 
