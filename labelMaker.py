@@ -1639,14 +1639,10 @@ class MainWindow(QMainWindow):
                 os.startfile(self.lastOpenDir)
             else:
                 os.system('open ' + os.path.normpath(self.lastOpenDir))
-            defaultOpenDirPath = self.lastOpenDir
-
+            defaultOpenDirPath = self.lastOpenDir 
         else:
-            if self.lang == 'ch':
-                self.msgBox.warning(self, "提示", "\n 原文件夹已不存在,请从新选择数据集路径!")
-            else:
-                self.msgBox.warning(self, "Warn",
-                                    "\n The original folder no longer exists, please choose the data set path again!")
+            self.msgBox.warning(self, "Warn",
+                                "\n The original folder no longer exists, please choose the data set path again!")
 
             self.actions.open_dataset_dir.setEnabled(False)
             defaultOpenDirPath = os.path.dirname(self.filePath) if self.filePath else '.'
@@ -1886,15 +1882,7 @@ class MainWindow(QMainWindow):
                 labels = [] 
                 if os.path.isfile(rec_gt_dir): 
                     with open(rec_gt_dir, 'r', encoding='utf-8') as gf: 
-                        data = gf.readlines() 
-                    #     fname = '' 
-                    #     for idx, d in enumerate(data): 
-                    #         if d.strip() != "": 
-                    #             if text == d.split('\t')[1].strip(): 
-                    #                 labels.append(d.split('\t')[0] + '\t' + text) 
-                    #                 fexist = True 
-                    #             else: 
-                    #                 labels.append(d.strip())
+                        data = gf.readlines()  
 
                     idx = len(data)
                     img_name = fbase + '_' + str(idx) + '.jpg'
@@ -1990,10 +1978,7 @@ class MainWindow(QMainWindow):
 
     def discardChangesDialog(self):
         yes, no, cancel = QMessageBox.Yes, QMessageBox.No, QMessageBox.Cancel
-        if self.lang == 'ch':
-            msg = u'您有未保存的变更, 您想保存再继续吗?\n点击 "No" 丢弃所有未保存的变更.'
-        else:
-            msg = u'아직 저장하지 않은 데이터가 있습니다. 저장후 계속 진행하시겠습니까?\n 변경사항을 저장하지 않으려면 "No" 버튼을 클릭하세요.'
+        msg = u'아직 저장하지 않은 데이터가 있습니다. 저장후 계속 진행하시겠습니까?\n 변경사항을 저장하지 않으려면 "No" 버튼을 클릭하세요.'
         return QMessageBox.warning(self, u'Attention', msg, yes | no | cancel)
 
     def errorMessage(self, title, message):
@@ -2356,8 +2341,7 @@ class MainWindow(QMainWindow):
                     ques_img.append(key)
                     print("Can not read image ", e)
         if ques_img:
-            QMessageBox.information(self,
-                                    "Information",
+            QMessageBox.information(self, "Information",
                                     "아래의 이미지들은 저장될수 없습니다. 이미지 경로와 라벨을 확인해주세요.\n"
                                     + "".join(str(i) + '\n' for i in ques_img))
         QMessageBox.information(self, "Information", "Crop 이미지들이 저장되었습니다(디렉토리): " + str(crop_img_dir))
@@ -2487,8 +2471,7 @@ class MainWindow(QMainWindow):
                 print(json_obj, file=f) 
                     
             if ques_img:
-                QMessageBox.information(self,
-                                        "Information",
+                QMessageBox.information(self, "Information",
                                         "아래의 이미지들은 저장될수 없습니다. 이미지 경로와 라벨을 확인해주세요.\n"
                                         + "".join(str(i) + '\n' for i in ques_img))
             QMessageBox.information(self, "Information", "Rec. 이미지들이 저장되었습니다(디렉토리): \n" + str(crop_img_dir))
@@ -2769,10 +2752,7 @@ class MainWindow(QMainWindow):
             return True, output  
         except Exception as ex: 
             print(repr(ex)) 
-            return False, repr(ex)  
-            
-        
-            
+            return False, repr(ex)   
             
     # ------------------------------------------------------------------
     def autolcm(self):
@@ -2783,7 +2763,7 @@ class MainWindow(QMainWindow):
         self.panel.setAlignment(Qt.AlignLeft)
         self.comboBox = QComboBox()
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItems(['Korean', 'English', 'Chinese & English', 'French', 'German', 'Japanese'])
+        self.comboBox.addItems(['Korean', 'English'])
         vbox.addWidget(self.panel)
         vbox.addWidget(self.comboBox)
         self.dialog = QDialog()
@@ -2813,11 +2793,7 @@ class MainWindow(QMainWindow):
     def modelChoose(self):
         print(self.comboBox.currentText())
         lg_idx = {'Korean': 'korean',             
-            'English': 'en', 
-            'Chinese & English': 'ch', 
-            'French': 'french', 
-            'German': 'german',
-            'Japanese': 'japan'}
+            'English': 'en' }
         del self.ocr
         self.ocr = PaddleOCR(use_angle_cls=False, 
             det=True, 
@@ -3055,7 +3031,7 @@ def main():
 
 
 if __name__ == '__main__':
-    resource_file = './libs/resources.py'
+    resource_file = './libs/resources[].py'
     if not os.path.exists(resource_file):
         output = os.system('pyrcc5 -o ./libs/resources.py resources.qrc')
         assert output == 0, "operate the cmd have some problems ,please check  whether there is a in the lib " \
