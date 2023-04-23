@@ -68,8 +68,8 @@ cover/
 *.mo
 *.pot
 *.jpg
-*.png
 *.gif
+*.png
 *.pt
 *.pdiparams
 *.ipynb
