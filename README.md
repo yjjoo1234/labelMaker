@@ -91,6 +91,4 @@ python labelMaker.py
 
 ### 2.2 Built-in Model
 
-
-
-# labelMaker
+ 
